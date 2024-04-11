@@ -48,6 +48,10 @@ const leaveSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isRejected: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // Create and export the Leave model
