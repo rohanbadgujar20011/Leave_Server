@@ -6,6 +6,7 @@ const {
   getTeacherByEmail,
   getTeacherById,
   login,
+  getallleaves,
 } = require("../Controller/teacher-controller");
 const verifyToken = require("../middlewere/verifytoken");
 
@@ -23,5 +24,6 @@ teacherRouter.get("/email/:email", verifyToken, getTeacherByEmail);
 
 // Protected route to retrieve a teacher by ID
 teacherRouter.get("/:id", verifyToken, getTeacherById);
+teacherRouter.get("/getallleaves/:id", verifyToken, getallleaves);
 
 module.exports = teacherRouter;

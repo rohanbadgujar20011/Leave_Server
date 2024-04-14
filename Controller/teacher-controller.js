@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Teacher = require("../Model/Teacher");
-
+const Leave = require("../Model/Leave");
 // Function to add a new teacher
 async function addTeacher(req, res) {
   const { name, email, password } = req.body;
@@ -34,16 +34,15 @@ async function addTeacher(req, res) {
 }
 
 async function getAllTeachers(req, res) {
-    try {
-      const teachers = await Teacher.find().select('-password');
-      // The '-password' argument to select() function tells MongoDB to exclude the password field
-      res.status(200).json(teachers);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error" });
-    }
+  try {
+    const teachers = await Teacher.find().select("-password");
+    // The '-password' argument to select() function tells MongoDB to exclude the password field
+    res.status(200).json(teachers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
-  
+}
 
 // Function to retrieve a teacher by email
 async function getTeacherByEmail(req, res) {
@@ -76,7 +75,25 @@ async function getTeacherById(req, res) {
     res.status(500).json({ message: "Server error" });
   }
 }
-
+async function getallleaves(req, res) {
+  try {
+    const { id } = req.params;
+    if (id) {
+      const allleaves = await Leave.find({ assignedTeacher: id });
+      if (allleaves) {
+        return res
+          .status(201)
+          .json({ allleaves, message: "Leaves fetched succesfully" });
+      } else {
+        return res.status(201).json({ message: "No leaves" });
+      }
+    } else {
+      return res.status(404).json({ message: "Id not found" });
+    }
+  } catch (error) {
+    return res.status(403).json({ error });
+  }
+}
 // Function for teacher login
 async function login(req, res) {
   const { email, password } = req.body;
@@ -105,13 +122,13 @@ async function login(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+    const newteacher = { email: teacher.email, name: teacher.name };
 
     // Send the token in the response
     res.status(200).json({
       token,
       Role: teacher.Role,
-      name: teacher.name,
-      email: teacher.email,
+      user: newteacher,
     });
   } catch (error) {
     console.error(error);
@@ -125,4 +142,5 @@ module.exports = {
   getTeacherByEmail,
   getTeacherById,
   login,
+  getallleaves,
 };
