@@ -1,5 +1,6 @@
 const express = require("express");
 const teacherRouter = express.Router();
+
 const {
   addTeacher,
   getAllTeachers,
@@ -7,6 +8,7 @@ const {
   getTeacherById,
   login,
   getallleaves,
+  approveleavebyteacher,
 } = require("../Controller/teacher-controller");
 const verifyToken = require("../middlewere/verifytoken");
 
@@ -25,5 +27,10 @@ teacherRouter.get("/email/:email", verifyToken, getTeacherByEmail);
 // Protected route to retrieve a teacher by ID
 teacherRouter.get("/:id", verifyToken, getTeacherById);
 teacherRouter.get("/getallleaves/:id", verifyToken, getallleaves);
+teacherRouter.patch(
+  "/approveleavebyteacher",
+  verifyToken,
+  approveleavebyteacher
+);
 
 module.exports = teacherRouter;

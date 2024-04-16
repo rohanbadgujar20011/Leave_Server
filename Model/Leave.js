@@ -52,6 +52,11 @@ const leaveSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  Comment: {
+    type: String,
+    trim: true,
+    default: null,
+  },
 });
 
 // Create and export the Leave model

@@ -136,6 +136,65 @@ async function login(req, res) {
   }
 }
 
+async function approveleavebyteacher(req, res) {
+  try {
+    const { teacherid, leaveid } = req.body;
+    const specificleave = await Leave.findOne({ _id: leaveid });
+    if (specificleave) {
+      if (specificleave.assignedTeacher == teacherid) {
+        if (specificleave.isRejected) {
+          return res.status(403).json({
+            message: "Rejected leaves cannot be approved",
+          });
+        }
+        if (specificleave.statusI) {
+          return res.status(200).json({
+            message: "Leave already approved",
+          });
+        }
+        specificleave.statusI = true;
+        await specificleave.save();
+        return res.status(201).json({ message: "Leave approved successfully" });
+      } else {
+        return res
+          .status(404)
+          .json({ message: "Leave assigned to another Teacher" });
+      }
+    } else {
+      return res.status(404).json({ message: "Leave not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function rejectLeaveByTeacher(req, res) {
+  try {
+    const { teacherid, leaveid } = req.body;
+    const specificleave = await Leave.findOne({ _id: leaveid });
+    if (specificleave) {
+      if (specificleave.assignedTeacher == teacherid) {
+        if (specificleave.statusI) {
+          return res.status(403).json({
+            message: "Approved leaves cannot be rejected",
+          });
+        }
+        specificleave.isRejected = true;
+        await specificleave.save();
+        return res.status(201).json({ message: "Leave rejected successfully" });
+      } else {
+        return res
+          .status(404)
+          .json({ message: "Leave assigned to another Teacher" });
+      }
+    } else {
+      return res.status(404).json({ message: "Leave not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
   addTeacher,
   getAllTeachers,
@@ -143,4 +202,6 @@ module.exports = {
   getTeacherById,
   login,
   getallleaves,
+  approveleavebyteacher,
+  rejectLeaveByTeacher,
 };
