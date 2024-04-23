@@ -1,5 +1,5 @@
 const Student = require("../Model/Student");
-const Leave =require("../Model/Leave")
+const Leave = require("../Model/Leave");
 // controllers/authController.js
 
 const bcrypt = require("bcryptjs");
@@ -83,10 +83,9 @@ async function login(req, res) {
       isvalid: student.isvalid,
       requests: student.requests,
     };
-    
 
     // Send the token in the response
-    res.status(200).json({ token, Role: student.Role, user,leaves });
+    res.status(200).json({ token, Role: student.Role, user, leaves });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });

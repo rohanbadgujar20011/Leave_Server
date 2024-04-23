@@ -195,6 +195,28 @@ async function rejectLeaveByTeacher(req, res) {
   }
 }
 
+async function reasignleave(req, res) {
+  try {
+    const { leaveid, from, to } = req.body;
+    const existingleave = await Leave.findOne({ _id: leaveid });
+    if (existingleave) {
+      if (existingleave.assignedTeacher == from) {
+        existingleave.assignedTeacher = to;
+        await existingleave.save();
+        return res
+          .status(200)
+          .json({ message: "Leave Reassigned Successfully" });
+      } else {
+        return res
+          .status(400)
+          .json({ message: "This is Assigned to other Teacher" });
+      }
+    } else {
+      return res.status(400).json({ message: "Leave Not found" });
+    }
+  } catch (error) {}
+}
+
 module.exports = {
   addTeacher,
   getAllTeachers,
@@ -204,4 +226,5 @@ module.exports = {
   getallleaves,
   approveleavebyteacher,
   rejectLeaveByTeacher,
+  reasignleave,
 };

@@ -10,6 +10,7 @@ const {
   getallleaves,
   approveleavebyteacher,
   rejectLeaveByTeacher,
+  reasignleave,
 } = require("../Controller/teacher-controller");
 const verifyToken = require("../middlewere/verifytoken");
 
@@ -38,5 +39,5 @@ teacherRouter.patch(
   verifyToken,
   rejectLeaveByTeacher
 );
-
+teacherRouter.patch("/resignleave", verifyToken, reasignleave);
 module.exports = teacherRouter;
